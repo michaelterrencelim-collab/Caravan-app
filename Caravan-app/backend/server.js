@@ -70,6 +70,16 @@ function loadRoutes(directory) {
 
 loadRoutes(path.join(__dirname, "routes"));
 
+// Serve static Angular web app files if www/ directory exists
+const wwwPath = path.join(__dirname, "../www");
+if (fs.existsSync(wwwPath)) {
+  app.use(express.static(wwwPath));
+  app.get("*", (req, res, next) => {
+    if (req.path.startsWith("/api") || req.path === "/healthz") return next();
+    res.sendFile(path.join(wwwPath, "index.html"));
+  });
+}
+
 app.use((_req, res) => {
   res.status(404).json({ error: "API route not found" });
 });
