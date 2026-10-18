@@ -23,8 +23,12 @@ const allowedFrontendOrigins = new Set([
 ]);
 
 function getReturnOrigin(value) {
+  if (!value) return FRONTEND_URL;
+  if (value.startsWith("caravan://") || value.startsWith("capacitor://")) {
+    return value;
+  }
   try {
-    const origin = new URL(String(value || FRONTEND_URL)).origin;
+    const origin = new URL(String(value)).origin;
     return allowedFrontendOrigins.has(origin) ? origin : FRONTEND_URL;
   } catch {
     return FRONTEND_URL;
@@ -226,7 +230,16 @@ app.get("/auth/google/callback", async (req, res) => {
     /*
      * Send the user back to your frontend.
      */
-    return res.redirect(`${frontendOrigin}/home`);
+    let redirectUrl = frontendOrigin;
+    if (frontendOrigin.startsWith("caravan://") || frontendOrigin.startsWith("capacitor://")) {
+      redirectUrl = frontendOrigin;
+    } else {
+      redirectUrl = frontendOrigin.endsWith("/home")
+        ? frontendOrigin
+        : `${frontendOrigin.replace(/\/$/, "")}/home`;
+    }
+
+    return res.redirect(redirectUrl);
   } catch (err) {
     console.error("Google login error:", err);
     clearGoogleState(res);

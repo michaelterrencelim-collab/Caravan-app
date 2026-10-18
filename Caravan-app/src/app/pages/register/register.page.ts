@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router, RouterLink } from '@angular/router';
 import { IonContent, IonIcon, IonToolbar } from '@ionic/angular';
 import { firstValueFrom } from 'rxjs';
+import { Capacitor } from '@capacitor/core';
 import { AuthService } from '../../services/auth.service';
 import { apiEndpoint } from '../../services/api-endpoint';
 
@@ -21,7 +22,11 @@ interface RegisterResponse {
   imports: [IonContent, FormsModule, NgIf, RouterLink, IonToolbar, IonIcon],
 })
 export class RegisterPage implements OnDestroy {
-  readonly googleLoginUrl = apiEndpoint(`/api/auth/google?returnTo=${encodeURIComponent(window.location.origin)}`);
+  readonly googleLoginUrl = apiEndpoint(
+    `/api/auth/google?returnTo=${encodeURIComponent(
+      Capacitor.isNativePlatform() ? 'caravan://home' : window.location.origin
+    )}`
+  );
   firstName = '';
   lastName = '';
   email = '';

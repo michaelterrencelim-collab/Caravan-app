@@ -6,6 +6,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { IonContent } from '@ionic/angular';
 import { IonIcon } from '@ionic/angular';
 import { firstValueFrom, Subscription, take } from 'rxjs';
+import { Capacitor } from '@capacitor/core';
 import { AuthService } from '../../services/auth.service';
 import { SettingsService } from '../../services/settings.service';
 import { apiEndpoint } from '../../services/api-endpoint';
@@ -23,7 +24,11 @@ interface LoginResponse {
   imports: [IonContent, FormsModule, NgIf, RouterLink, IonIcon],
 })
 export class LoginPage implements OnInit, OnDestroy {
-  readonly googleLoginUrl = apiEndpoint(`/api/auth/google?returnTo=${encodeURIComponent(window.location.origin)}`);
+  readonly googleLoginUrl = apiEndpoint(
+    `/api/auth/google?returnTo=${encodeURIComponent(
+      Capacitor.isNativePlatform() ? 'caravan://home' : window.location.origin
+    )}`
+  );
   email = '';
   password = '';
   showPassword = false;

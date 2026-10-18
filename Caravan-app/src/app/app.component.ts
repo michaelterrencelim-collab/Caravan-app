@@ -1,6 +1,8 @@
 import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
+import { App } from '@capacitor/app';
+import { Capacitor } from '@capacitor/core';
 import { AuthService } from './services/auth.service';
 import { SettingsService } from './services/settings.service';
 import { ConnectivityNoticeComponent } from './components/connectivity-notice.component';
@@ -77,6 +79,18 @@ export class AppComponent implements OnInit, OnDestroy {
   ];
 
   ngOnInit(): void {
+    if (Capacitor.isNativePlatform()) {
+      void App.addListener('appUrlOpen', (event) => {
+        const rawUrl = event.url || '';
+        const path = rawUrl.includes('://') ? rawUrl.split('://')[1] : rawUrl;
+        if (path) {
+          const targetPath = path.startsWith('/') ? path : `/${path}`;
+          void this.router.navigateByUrl(targetPath);
+          void this.auth.refresh();
+        }
+      });
+    }
+
     this.updateNavigationVisibility(this.router.url);
     this.navigationSubscription = this.router.events
       .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
