@@ -62,8 +62,14 @@ function getCallbackUrl(req) {
   return `${protocol}://${host}/api/auth/google/callback`;
 }
 
-function clearGoogleState(res) {
-  const options = { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "lax", path: "/api/auth/google/callback" };
+function clearGoogleState(res, req) {
+  const isSecure = (req && req.get("host") && !req.get("host").includes("localhost") && !req.get("host").includes("10.0.2.2")) || process.env.NODE_ENV === "production";
+  const options = {
+    httpOnly: true,
+    secure: isSecure,
+    sameSite: isSecure ? "none" : "lax",
+    path: "/api/auth/google/callback",
+  };
   res.clearCookie("google_oauth_state", options);
   res.clearCookie("google_oauth_return", options);
 }
@@ -85,10 +91,11 @@ app.customPath = "/api";
 app.get("/auth/google", (req, res) => {
   console.log("Route hit: /auth/google from host:", req.get("host"));
   const state = crypto.randomBytes(24).toString("hex");
+  const isSecure = (!req.get("host").includes("localhost") && !req.get("host").includes("10.0.2.2")) || process.env.NODE_ENV === "production";
   const cookieOptions = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    secure: isSecure,
+    sameSite: isSecure ? "none" : "lax",
     maxAge: 5 * 60 * 1000,
     path: "/api/auth/google/callback",
   };
@@ -111,12 +118,12 @@ app.get("/auth/google", (req, res) => {
  * Google redirects the user here
  */
 app.get("/auth/google/callback", async (req, res) => {
-  const frontendOrigin = getReturnOrigin(req.cookies?.google_oauth_return);
+  const frontendOrigin = getReturnOrigin(req.cookies?.google_oauth_return, req);
   try {
     const { code } = req.query;
     const stateMatches = typeof req.query.state === "string" &&
       req.cookies?.google_oauth_state === req.query.state;
-    clearGoogleState(res);
+    clearGoogleState(res, req);
 
     if (!code || !stateMatches) {
       return res.redirect(`${frontendOrigin}/login?error=google_auth`);
@@ -235,10 +242,11 @@ app.get("/auth/google/callback", async (req, res) => {
     /*
      * Same cookie system as normal login.
      */
+    const isSecure = (!req.get("host").includes("localhost") && !req.get("host").includes("10.0.2.2")) || process.env.NODE_ENV === "production";
     res.cookie("auth", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      secure: isSecure,
+      sameSite: isSecure ? "none" : "lax",
       maxAge: 24 * 60 * 60 * 1000,
     });
 
