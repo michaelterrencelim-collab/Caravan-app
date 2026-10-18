@@ -32,8 +32,14 @@ function getReturnOrigin(value) {
 }
 
 function getCallbackUrl(req) {
+  if (process.env.GOOGLE_CALLBACK_URL) {
+    return process.env.GOOGLE_CALLBACK_URL;
+  }
   const host = req.get("host");
-  const protocol = req.protocol || "http";
+  const rawProto = req.headers["x-forwarded-proto"] || req.protocol || "http";
+  const protocol = (host && (host.includes("localhost") || host.includes("10.0.2.2")))
+    ? rawProto
+    : "https";
   return `${protocol}://${host}/api/auth/google/callback`;
 }
 
