@@ -19,17 +19,32 @@ const allowedFrontendOrigins = new Set([
   "http://localhost:8100",
   "https://localhost",
   "capacitor://localhost",
+  "https://aqua-barracuda-666660.hostingersite.com",
+  "http://aqua-barracuda-666660.hostingersite.com",
   ...(process.env.CORS_ORIGINS || "").split(",").map((origin) => origin.trim()).filter(Boolean),
 ]);
 
-function getReturnOrigin(value) {
-  if (!value) return FRONTEND_URL;
+function getReturnOrigin(value, req) {
+  if (!value) {
+    if (req) {
+      const host = req.get("host");
+      const proto = req.headers["x-forwarded-proto"] || req.protocol || "https";
+      return `${proto}://${host}`;
+    }
+    return FRONTEND_URL;
+  }
   if (value.startsWith("caravan://") || value.startsWith("capacitor://")) {
     return value;
   }
   try {
     const origin = new URL(String(value)).origin;
-    return allowedFrontendOrigins.has(origin) ? origin : FRONTEND_URL;
+    if (allowedFrontendOrigins.has(origin)) {
+      return origin;
+    }
+    if (req && req.get("host") && origin.includes(req.get("host"))) {
+      return origin;
+    }
+    return FRONTEND_URL;
   } catch {
     return FRONTEND_URL;
   }
@@ -78,7 +93,7 @@ app.get("/auth/google", (req, res) => {
     path: "/api/auth/google/callback",
   };
   res.cookie("google_oauth_state", state, cookieOptions);
-  res.cookie("google_oauth_return", getReturnOrigin(req.query.returnTo), cookieOptions);
+  res.cookie("google_oauth_return", getReturnOrigin(req.query.returnTo, req), cookieOptions);
 
   const { client } = getGoogleClient(req);
   const url = client.generateAuthUrl({

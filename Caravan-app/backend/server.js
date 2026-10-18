@@ -28,6 +28,8 @@ const allowedOrigins = new Set([
   "capacitor://localhost",
   "http://10.0.2.2",
   "http://10.0.2.2:3000",
+  "https://aqua-barracuda-666660.hostingersite.com",
+  "http://aqua-barracuda-666660.hostingersite.com",
   ...(process.env.CORS_ORIGINS || "").split(",").map((origin) => origin.trim()).filter(Boolean),
 ]);
 
