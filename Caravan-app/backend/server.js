@@ -72,18 +72,31 @@ function loadRoutes(directory) {
 
 loadRoutes(path.join(__dirname, "routes"));
 
-// Serve static Angular web app files if www/ directory exists
+// Serve static Angular web app files if www/ or public/ directory exists
 const wwwPath = path.join(__dirname, "../www");
-if (fs.existsSync(wwwPath)) {
-  app.use(express.static(wwwPath));
+const publicPath = path.join(__dirname, "public");
+const staticPath = fs.existsSync(wwwPath)
+  ? wwwPath
+  : fs.existsSync(publicPath)
+  ? publicPath
+  : null;
+
+if (staticPath) {
+  app.use(express.static(staticPath));
   app.get("*", (req, res, next) => {
     if (req.path.startsWith("/api") || req.path === "/healthz") return next();
-    res.sendFile(path.join(wwwPath, "index.html"));
+    res.sendFile(path.join(staticPath, "index.html"));
   });
 }
 
-app.use((_req, res) => {
-  res.status(404).json({ error: "API route not found" });
+app.use((req, res) => {
+  if (req.path.startsWith("/api")) {
+    return res.status(404).json({ error: "API route not found" });
+  }
+  if (staticPath) {
+    return res.sendFile(path.join(staticPath, "index.html"));
+  }
+  res.redirect("/");
 });
 
 if (require.main === module) {
