@@ -1,10 +1,16 @@
   const jwt = require("jsonwebtoken");
   const JWT_SECRET = process.env.JWT_SECRET;
 
+  function getToken(req) {
+    const authHeader = req.headers.authorization;
+    const bearerToken = authHeader && authHeader.startsWith("Bearer ") ? authHeader.split(" ")[1] : null;
+    return req.cookies?.auth || bearerToken;
+  }
+
   const requireAuth = (requiredRole = "user") => {
     // 3. Return the actual middleware function Express expects
     return (req, res, next) => {
-      const token = req.cookies?.auth; // <- read from cookie
+      const token = getToken(req);
       console.log("auth a");
       if (!token) return res.redirect("/login"); // <- redirect to login if no token
       console.log("auth b");
@@ -30,7 +36,7 @@
     const checkAuth = (requiredRole = "user") => {
     // 3. Return the actual middleware function Express expects
     return (req, res, next) => {
-      const token = req.cookies?.auth; // <- read from cookie
+      const token = getToken(req);
       console.log("auth a");
       if (!token) return res.status(401).json({ error: "Not logged in" }); // <- return error if no token
       console.log("auth b");

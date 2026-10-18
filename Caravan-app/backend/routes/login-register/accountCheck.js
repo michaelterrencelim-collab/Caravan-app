@@ -7,7 +7,10 @@ const JWT_SECRET = process.env.JWT_SECRET;
 app.customPath = "/api";
 
 app.get("/isLoggedIn", (req, res) => {
-  const token = req.cookies?.auth;
+  const authHeader = req.headers.authorization;
+  const bearerToken = authHeader && authHeader.startsWith("Bearer ") ? authHeader.split(" ")[1] : null;
+  const token = req.cookies?.auth || bearerToken;
+
   if (!token) {
     return res.status(200).json({ loggedIn: false });
   }

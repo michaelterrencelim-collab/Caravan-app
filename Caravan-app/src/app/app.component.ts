@@ -82,11 +82,24 @@ export class AppComponent implements OnInit, OnDestroy {
     if (Capacitor.isNativePlatform()) {
       void App.addListener('appUrlOpen', (event) => {
         const rawUrl = event.url || '';
-        const path = rawUrl.includes('://') ? rawUrl.split('://')[1] : rawUrl;
-        if (path) {
-          const targetPath = path.startsWith('/') ? path : `/${path}`;
+        try {
+          const urlObj = new URL(rawUrl.includes('://') ? rawUrl : `caravan://${rawUrl}`);
+          const token = urlObj.searchParams.get('token');
+          if (token) {
+            localStorage.setItem('auth_token', token);
+            this.auth.isAuthenticated.set(true);
+          }
+          const pathname = urlObj.pathname || '/home';
+          const targetPath = pathname.startsWith('/') ? pathname : `/${pathname}`;
           void this.router.navigateByUrl(targetPath);
           void this.auth.refresh();
+        } catch {
+          const path = rawUrl.includes('://') ? rawUrl.split('://')[1] : rawUrl;
+          if (path) {
+            const targetPath = path.startsWith('/') ? path : `/${path}`;
+            void this.router.navigateByUrl(targetPath);
+            void this.auth.refresh();
+          }
         }
       });
     }

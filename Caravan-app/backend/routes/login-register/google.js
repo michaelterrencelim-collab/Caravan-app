@@ -232,7 +232,10 @@ app.get("/auth/google/callback", async (req, res) => {
      */
     let redirectUrl = frontendOrigin;
     if (frontendOrigin.startsWith("caravan://") || frontendOrigin.startsWith("capacitor://")) {
-      redirectUrl = frontendOrigin;
+      const cleanOrigin = frontendOrigin.replace(/\/$/, "");
+      redirectUrl = cleanOrigin.includes("?")
+        ? `${cleanOrigin}&token=${token}`
+        : `${cleanOrigin}?token=${token}`;
     } else {
       redirectUrl = frontendOrigin.endsWith("/home")
         ? frontendOrigin

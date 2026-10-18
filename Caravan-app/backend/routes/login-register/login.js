@@ -84,6 +84,7 @@ app.post("/login", async (req, res) => {
     // Don't need to send the JWT back to JavaScript anymore
     return res.json({
       role: isAdmin ? "admin" : "user",
+      token,
     });
   } catch (err) {
     console.error("Login error:", err);
