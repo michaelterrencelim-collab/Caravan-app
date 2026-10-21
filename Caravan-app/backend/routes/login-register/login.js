@@ -10,8 +10,6 @@ app.customPath = "/api";
 
 app.post("/login", async (req, res) => {
   try {
-    console.log("A");
-
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -30,63 +28,37 @@ app.post("/login", async (req, res) => {
       args: [email, password],
     });
 
-    const users = result.rows;
-
-    const result2 = await db.execute({
-      sql: `
-        SELECT *
-        FROM Admin
-        WHERE Admin_email = ?
-        AND Admin_password = ?
-      `,
-      args: [email, password],
-    });
-
-    const admins = result2.rows;
-
-    console.log("a");
-    console.log(admins, users);
-
-    if (users.length === 0 && admins.length === 0) {
+    const user = result.rows[0];
+    if (!user) {
       return res.status(401).json({
         error: "Invalid email or password",
       });
     }
 
-    console.log("attempting");
-
-    const user = admins[0] ? admins[0] : users[0];
-    const isAdmin = !!admins[0];
-
-    if (!isAdmin) {
-      const accountStatus = String(user.Status || "Enabled").trim().toLowerCase();
-      if (!["enabled", "active"].includes(accountStatus)) {
-        res.clearCookie("auth", {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: "lax",
-          path: "/",
-        });
-        return res.status(403).json({
-          error: "Your account is disabled. Please reach out to the Caravan team.",
-        });
-      }
+    const accountStatus = String(user.Status || "Enabled").trim().toLowerCase();
+    if (!["enabled", "active"].includes(accountStatus)) {
+      res.clearCookie("auth", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
+      });
+      return res.status(403).json({
+        error: "Your account is disabled. Please reach out to the Caravan team.",
+      });
     }
 
     const token = jwt.sign(
       {
-        ...(isAdmin
-          ? { adminId: user.Admin_id, email: user.Admin_email }
-          : { userId: user.Customer_id, email: user.Cus_email }),
-        role: isAdmin ? "admin" : "user",
+        userId: user.Customer_id,
+        email: user.Cus_email,
+        role: "user",
       },
       JWT_SECRET,
       {
         expiresIn: "24h",
       },
     );
-
-    console.log("is admin?", isAdmin);
 
     // Store JWT in HTTP-only cookie
     res.cookie("auth", token, {
@@ -98,7 +70,7 @@ app.post("/login", async (req, res) => {
 
     // Don't need to send the JWT back to JavaScript anymore
     return res.json({
-      role: isAdmin ? "admin" : "user",
+      role: "user",
       token,
     });
   } catch (err) {
