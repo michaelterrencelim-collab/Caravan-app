@@ -26,6 +26,7 @@ router.get("/profile", checkAuth("user"), async (req, res) => {
                     first_name,
                     last_name,
                     Cus_email,
+                    Cus_phone,
                     Cus_birthdate
                 FROM Customer
                 WHERE Customer_id = ?
@@ -44,6 +45,7 @@ router.get("/profile", checkAuth("user"), async (req, res) => {
         return res.status(200).json({
             customerId: customer.Customer_id,
             email: customer.Cus_email,
+            phone: customer.Cus_phone ?? '',
             firstName: customer.first_name,
             lastName: customer.last_name,
             birthdate: customer.Cus_birthdate
@@ -66,6 +68,7 @@ router.put("/profile", checkAuth("user"), async (req, res) => {
 
         const {
             email,
+            phone,
             firstName,
             lastName,
             birthdate,
@@ -95,6 +98,13 @@ router.put("/profile", checkAuth("user"), async (req, res) => {
         if (firstName.length > 100 || lastName.length > 100) {
             return res.status(400).json({
                 error: "First name or last name is too long"
+            });
+        }
+
+        const normalizedPhone = typeof phone === "string" ? phone.trim() : "";
+        if (normalizedPhone.length > 30) {
+            return res.status(400).json({
+                error: "Phone number is too long"
             });
         }
 
@@ -131,6 +141,7 @@ router.put("/profile", checkAuth("user"), async (req, res) => {
                     UPDATE Customer
                     SET
                         Cus_email = ?,
+                        Cus_phone = ?,
                         first_name = ?,
                         last_name = ?,
                         Cus_birthdate = ?,
@@ -139,6 +150,7 @@ router.put("/profile", checkAuth("user"), async (req, res) => {
                 `,
                 args: [
                     email,
+                    normalizedPhone || null,
                     firstName,
                     lastName,
                     birthdate || null,
@@ -152,6 +164,7 @@ router.put("/profile", checkAuth("user"), async (req, res) => {
                     UPDATE Customer
                     SET
                         Cus_email = ?,
+                        Cus_phone = ?,
                         first_name = ?,
                         last_name = ?,
                         Cus_birthdate = ?
@@ -159,6 +172,7 @@ router.put("/profile", checkAuth("user"), async (req, res) => {
                 `,
                 args: [
                     email,
+                    normalizedPhone || null,
                     firstName,
                     lastName,
                     birthdate || null,
@@ -171,6 +185,7 @@ router.put("/profile", checkAuth("user"), async (req, res) => {
             message: "Profile updated successfully",
             profile: {
                 email: email,
+                phone: normalizedPhone,
                 firstName: firstName,
                 lastName: lastName,
                 birthdate: birthdate || null

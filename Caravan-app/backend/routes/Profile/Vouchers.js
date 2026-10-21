@@ -23,12 +23,14 @@ router.get("/me", checkAuth("user"), async (req, res) => {
                     v.Voucher_name,
                     v.Voucher_desc,
                     v.discount,
+                    v.Status_id,
                     cv.Voucher_status
                 FROM Customer_vouchers cv
                 INNER JOIN Vouchers v
                     ON cv.Voucher_id = v.Voucher_id
                 WHERE cv.Customer_id = ?
                 AND cv.Voucher_status = 'Unused'
+                AND v.Status_id = 1
                 ORDER BY v.Voucher_id
             `,
             args: [customerId]
@@ -76,6 +78,7 @@ router.post("/apply", checkAuth("user"), async (req, res) => {
                 WHERE cv.Customer_id = ?
                 AND cv.Voucher_id = ?
                 AND cv.Voucher_status = 'Unused'
+                AND v.Status_id = 1
             `,
             args: [customerId, voucherId]
         });
@@ -131,6 +134,12 @@ router.put("/use", checkAuth("user"), async (req, res) => {
                 WHERE Customer_id = ?
                 AND Voucher_id = ?
                 AND Voucher_status = 'Unused'
+                AND EXISTS (
+                    SELECT 1
+                    FROM Vouchers v
+                    WHERE v.Voucher_id = Customer_vouchers.Voucher_id
+                    AND v.Status_id = 1
+                )
             `,
             args: [customerId, voucherId]
         });

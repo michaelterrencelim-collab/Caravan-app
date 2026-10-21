@@ -14,6 +14,7 @@ type ProfileTab = 'overview' | 'addresses' | 'vouchers' | 'wishlist' | 'logout';
 
 interface Profile {
   email: string;
+  phone: string;
   birthdate: string;
   firstName: string;
   lastName: string;
@@ -73,7 +74,7 @@ export class ProfilePage implements OnInit {
   wishlistToDeleteId: number | null = null;
   editingAddressId: number | null = null;
 
-  profile: Profile = { email: '', birthdate: '', firstName: '', lastName: '', password: '' };
+  profile: Profile = { email: '', phone: '', birthdate: '', firstName: '', lastName: '', password: '' };
   private originalProfile: Profile = { ...this.profile };
   newAddress = { street: '', city: '', zipCode: '' };
   addresses: Address[] = [];
@@ -169,6 +170,7 @@ export class ProfilePage implements OnInit {
 
       this.profile = {
         email: profile.email ?? '',
+        phone: profile.phone ?? '',
         firstName: profile.firstName ?? '',
         lastName: profile.lastName ?? '',
         birthdate: this.toDateInput(profile.birthdate),
@@ -239,6 +241,7 @@ export class ProfilePage implements OnInit {
     try {
       const payload = {
         email: this.profile.email.trim(),
+        phone: this.profile.phone.trim(),
         firstName: this.profile.firstName.trim(),
         lastName: this.profile.lastName.trim(),
         birthdate: this.profile.birthdate || null,

@@ -121,6 +121,18 @@
             </div>
 
             <div class="form-group">
+              <label for="phone">Phone Number</label>
+              <input
+                id="phone"
+                type="tel"
+                [(ngModel)]="profile.phone"
+                name="phone"
+                maxlength="30"
+                placeholder="Add your phone number"
+                [readonly]="!isEditingProfile">
+            </div>
+
+            <div class="form-group">
               <label for="password">Password</label>
               <input
                 id="password"

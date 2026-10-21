@@ -132,7 +132,7 @@ export class RegisterPage implements OnDestroy {
 
       if (data.login) {
         if (data.token) {
-          localStorage.setItem('auth_token', data.token);
+          this.auth.acceptLoginToken(data.token);
         }
         this.auth.isAuthenticated.set(true);
         this.auth.ready.set(true);

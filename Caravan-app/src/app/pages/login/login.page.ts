@@ -124,7 +124,7 @@ export class LoginPage implements OnInit, OnDestroy {
       }
 
       if ((data as any)?.token) {
-        localStorage.setItem('auth_token', (data as any).token);
+        this.auth.acceptLoginToken((data as any).token);
       }
 
       this.auth.isAuthenticated.set(true);
