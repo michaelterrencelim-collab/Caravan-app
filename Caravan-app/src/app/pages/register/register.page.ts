@@ -12,6 +12,8 @@ import { apiEndpoint } from '../../services/api-endpoint';
 interface RegisterResponse {
   error?: string;
   login?: string;
+  role?: string;
+  token?: string;
 }
 
 @Component({
@@ -53,6 +55,13 @@ export class RegisterPage implements OnDestroy {
   ) {}
 
   goBack(): void { void this.router.navigateByUrl('/login'); }
+
+  beginGoogleLogin(): void {
+    // Google OAuth authenticates through the cookie callback. Remove a stale
+    // bearer token so the callback's customer account becomes the active one.
+    localStorage.removeItem('auth_token');
+    this.auth.isAuthenticated.set(false);
+  }
 
   // ---- Privacy modal ----
   openPrivacy(event: Event): void {
@@ -122,6 +131,9 @@ export class RegisterPage implements OnDestroy {
       }
 
       if (data.login) {
+        if (data.token) {
+          localStorage.setItem('auth_token', data.token);
+        }
         this.auth.isAuthenticated.set(true);
         this.auth.ready.set(true);
         this.showSuccess(data.login);

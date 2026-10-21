@@ -63,6 +63,10 @@ export class LoginPage implements OnInit, OnDestroy {
   }
 
   beginGoogleLogin(): void {
+    // Google OAuth authenticates through the cookie callback. Remove an old
+    // bearer token so it cannot shadow the account returned by Google.
+    localStorage.removeItem('auth_token');
+    this.auth.isAuthenticated.set(false);
     this.queueTeamBanner();
   }
 

@@ -4,7 +4,9 @@
   function getToken(req) {
     const authHeader = req.headers.authorization;
     const bearerToken = authHeader && authHeader.startsWith("Bearer ") ? authHeader.split(" ")[1] : null;
-    return req.cookies?.auth || bearerToken;
+    // The bearer token is the current client session. A cookie may belong to
+    // an earlier account, so it must not override an explicit Authorization.
+    return bearerToken || req.cookies?.auth;
   }
 
   const requireAuth = (requiredRole = "user") => {

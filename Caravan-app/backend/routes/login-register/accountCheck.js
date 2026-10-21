@@ -9,7 +9,7 @@ app.customPath = "/api";
 app.get("/isLoggedIn", (req, res) => {
   const authHeader = req.headers.authorization;
   const bearerToken = authHeader && authHeader.startsWith("Bearer ") ? authHeader.split(" ")[1] : null;
-  const token = req.cookies?.auth || bearerToken;
+  const token = bearerToken || req.cookies?.auth;
 
   if (!token) {
     return res.status(200).json({ loggedIn: false });

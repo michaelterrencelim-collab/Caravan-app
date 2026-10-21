@@ -105,6 +105,8 @@ if (existingUser.rows.length > 0) {
 
     return res.json({
       login: "success",
+      role: "user",
+      token,
     });
   } catch (err) {
     console.error(err);
