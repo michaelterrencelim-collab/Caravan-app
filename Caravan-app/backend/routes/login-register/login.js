@@ -22,10 +22,10 @@ app.post("/login", async (req, res) => {
       sql: `
         SELECT *
         FROM Customer
-        WHERE Cus_email = ?
-        AND Cus_password = ?
+        WHERE LOWER(TRIM(Cus_email)) = LOWER(TRIM(?))
+        LIMIT 1
       `,
-      args: [email, password],
+      args: [email],
     });
 
     const user = result.rows[0];
@@ -45,6 +45,12 @@ app.post("/login", async (req, res) => {
       });
       return res.status(403).json({
         error: "Your account is disabled. Please reach out to the Caravan team.",
+      });
+    }
+
+    if (user.Cus_password !== password) {
+      return res.status(401).json({
+        error: "Invalid email or password",
       });
     }
 

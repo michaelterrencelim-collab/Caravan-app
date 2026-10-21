@@ -1,5 +1,4 @@
 import { HttpInterceptorFn } from '@angular/common/http';
-import { Capacitor } from '@capacitor/core';
 import { apiEndpoint } from './api-endpoint';
 
 export const apiBaseUrlInterceptor: HttpInterceptorFn = (request, next) => {
@@ -9,7 +8,7 @@ export const apiBaseUrlInterceptor: HttpInterceptorFn = (request, next) => {
     headers = headers.set('Authorization', `Bearer ${token}`);
   }
 
-  if (!Capacitor.isNativePlatform() || Capacitor.getPlatform() !== 'android' || /^https?:\/\//i.test(request.url)) {
+  if (/^https?:\/\//i.test(request.url)) {
     return next(request.clone({ headers, withCredentials: true }));
   }
 

@@ -16,7 +16,7 @@ app.get("/isLoggedIn", (req, res) => {
   }
 
   jwt.verify(token, JWT_SECRET, (error, user) => {
-    if (error || !["user", "admin"].includes(user?.role)) {
+    if (error || user?.role !== "user") {
       res.clearCookie("auth", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",

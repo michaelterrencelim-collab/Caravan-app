@@ -128,6 +128,9 @@ export class LoginPage implements OnInit, OnDestroy {
       this.queueTeamBanner();
       this.router.navigateByUrl('/home');
     } catch (err: any) {
+      localStorage.removeItem('auth_token');
+      this.auth.isAuthenticated.set(false);
+      this.auth.ready.set(true);
       // Non-2xx responses land here; use the server's error message if it sent one
       const message = typeof err?.error === 'string'
         ? err.error

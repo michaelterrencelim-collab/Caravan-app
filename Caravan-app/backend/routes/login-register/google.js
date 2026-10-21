@@ -20,6 +20,7 @@ const allowedFrontendOrigins = new Set([
   "http://localhost:8100",
   "https://localhost",
   "capacitor://localhost",
+  "https://blanchedalmond-ibex-845195.hostingersite.com",
   "https://aqua-barracuda-666660.hostingersite.com",
   "http://aqua-barracuda-666660.hostingersite.com",
   ...(process.env.CORS_ORIGINS || "").split(",").map((origin) => origin.trim()).filter(Boolean),

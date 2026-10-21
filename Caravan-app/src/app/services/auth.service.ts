@@ -19,6 +19,9 @@ export class AuthService {
         this.http.get<SessionResponse>('/api/isLoggedIn').pipe(timeout(3000)),
       );
       this.isAuthenticated.set(session.loggedIn === true);
+      if (!session.loggedIn) {
+        localStorage.removeItem('auth_token');
+      }
     } catch {
       this.isAuthenticated.set(false);
     } finally {

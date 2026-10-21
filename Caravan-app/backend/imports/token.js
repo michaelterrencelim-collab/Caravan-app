@@ -20,7 +20,7 @@
           return res.status(403).json({ error: "Forbidden: Invalid token" });
         }
 
-        if (decodedUser.role !== requiredRole && decodedUser.role !== "admin" ) {
+        if (decodedUser.role !== requiredRole) {
           console.log("auth d");
           return res
             .status(403)
@@ -46,7 +46,7 @@
           return res.status(403).json({ error: "Forbidden: Invalid token" });
         }
 
-        if (decodedUser.role !== requiredRole && decodedUser.role !== "admin" ) {
+        if (decodedUser.role !== requiredRole) {
           console.log("auth d");
           return res
             .status(403)
