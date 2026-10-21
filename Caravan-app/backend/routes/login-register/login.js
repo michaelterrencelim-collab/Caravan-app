@@ -58,6 +58,21 @@ app.post("/login", async (req, res) => {
     const user = admins[0] ? admins[0] : users[0];
     const isAdmin = !!admins[0];
 
+    if (!isAdmin) {
+      const accountStatus = String(user.Status || "Enabled").trim().toLowerCase();
+      if (!["enabled", "active"].includes(accountStatus)) {
+        res.clearCookie("auth", {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
+          path: "/",
+        });
+        return res.status(403).json({
+          error: "Your account is disabled. Please reach out to the Caravan team.",
+        });
+      }
+    }
+
     const token = jwt.sign(
       {
         ...(isAdmin

@@ -43,6 +43,7 @@ app.get(
                         ON w.product_id = p.product_id
 
                     WHERE w.Customer_id = ?
+                    AND LOWER(COALESCE(p.Status, 'Shown')) = 'shown'
 
                     ORDER BY p.Prod_name ASC
                 `,
@@ -101,9 +102,11 @@ app.post(
                 sql: `
                     SELECT
                         product_id,
-                        type_id
+                        type_id,
+                        Status
                     FROM Product
                     WHERE product_id = ?
+                    AND LOWER(COALESCE(Status, 'Shown')) = 'shown'
                 `,
                 args: [productId]
             });

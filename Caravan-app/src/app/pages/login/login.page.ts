@@ -51,6 +51,9 @@ export class LoginPage implements OnInit, OnDestroy {
       if (params.get('error') === 'google_auth') {
         this.clearPendingTeamBanner();
         this.showError('Google sign-in could not be completed. Please try again.');
+      } else if (params.get('error') === 'account_disabled') {
+        this.clearPendingTeamBanner();
+        this.showError('Your account is disabled. Please reach out to the Caravan team.');
       }
     });
   }

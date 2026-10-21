@@ -4,6 +4,7 @@ const crypto = require("crypto");
 
 const db = require("../../imports/database");
 const jwt = require("jsonwebtoken");
+const { grantWelcomeVoucher } = require("../../imports/customerVoucher");
 
 const { OAuth2Client } = require("google-auth-library");
 
@@ -185,6 +186,18 @@ app.get("/auth/google/callback", async (req, res) => {
        * Existing account
        */
       user = existingUser.rows[0];
+      const accountStatus = String(user.Status || "Enabled").trim().toLowerCase();
+      if (!["enabled", "active"].includes(accountStatus)) {
+        const host = req.get("host") || "";
+        const isSecure = (!host.includes("localhost") && !host.includes("10.0.2.2")) || process.env.NODE_ENV === "production";
+        res.clearCookie("auth", {
+          httpOnly: true,
+          secure: isSecure,
+          sameSite: isSecure ? "none" : "lax",
+          path: "/",
+        });
+        return res.redirect(`${frontendOrigin}/login?error=account_disabled`);
+      }
     } else {
       /*
        * First Google login.
@@ -222,6 +235,10 @@ app.get("/auth/google/callback", async (req, res) => {
       });
 
       user = createdUser.rows[0];
+      if (!user) {
+        return res.redirect(`${frontendOrigin}/login?error=google_auth`);
+      }
+      await grantWelcomeVoucher(Number(user.Customer_id));
     }
 
     /*

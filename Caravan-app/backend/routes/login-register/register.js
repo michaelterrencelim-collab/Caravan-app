@@ -2,6 +2,7 @@ const express = require("express");
 const app = express.Router();
 const db = require("../../imports/database");
 const jwt = require("jsonwebtoken");
+const { grantWelcomeVoucher } = require("../../imports/customerVoucher");
 const JWT_SECRET = process.env.JWT_SECRET;
 app.customPath = "/api";
 
@@ -80,6 +81,8 @@ if (existingUser.rows.length > 0) {
     if (!user) {
       return res.status(500).json({ error: "Server error" });
     }
+
+    await grantWelcomeVoucher(Number(user.Customer_id));
 
     const token = jwt.sign(
       {
