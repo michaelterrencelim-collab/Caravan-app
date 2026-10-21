@@ -1,5 +1,7 @@
 <ion-content>
-  <button class="back-button" type="button" (click)="goBack()">&#x21A9;</button>
+  <header class="product-page-header">
+    <button class="back-button" type="button" (click)="goBack()" aria-label="Back to market">← Back</button>
+  </header>
 
   @if (loading) {
     <div class="loading-overlay" role="status" aria-live="polite">

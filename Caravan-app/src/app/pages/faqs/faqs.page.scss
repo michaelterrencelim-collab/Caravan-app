@@ -206,3 +206,13 @@ ion-content {
     gap: 30px;
   }
 }
+
+@media (min-width: 769px) {
+  ion-content::part(scroll) {
+    display: flex;
+    min-height: 100%;
+    flex-direction: column;
+  }
+
+  .faq-page { flex: 1 0 auto; }
+}

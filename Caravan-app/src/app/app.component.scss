@@ -205,6 +205,14 @@ ion-router-outlet {
   object-fit: contain;
 }
 
+.app-splash h1 {
+  margin: 0;
+  color: var(--caravan-brown);
+  font-family: Merriweather_Semi, Georgia, serif;
+  font-size: clamp(1.35rem, 4vw, 1.8rem);
+  line-height: 1.2;
+}
+
 .app-splash p {
   margin: 0;
   color: #806b5c;
