@@ -42,10 +42,10 @@
           </button>
 
           <div class="product-actions">
-            <button class="btn-like" type="button" (click)="toggleLike()">
-              <span class="heart-icon">{{ liked ? '♥' : '♡' }}</span>
-              <span>{{ likeCount }}</span>
-            </button>
+            <div class="product-rating" [attr.aria-label]="ratingLabel() + ' rating'">
+              <span class="rating-stars">{{ starString() }}</span>
+              <span class="rating-label">{{ ratingLabel() }}</span>
+            </div>
             <button class="add-to-cart-button" type="button" aria-label="Add to Cart" (click)="addToCart()">
               🛒
             </button>

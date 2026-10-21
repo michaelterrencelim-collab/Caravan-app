@@ -115,7 +115,7 @@ export class HomePage implements AfterViewInit, OnInit {
     private readonly http: HttpClient,
     private readonly router: Router,
     private readonly changeDetector: ChangeDetectorRef,
-    private readonly settings: SettingsService,
+    readonly settings: SettingsService,
   ) {}
 
   ngOnInit(): void {

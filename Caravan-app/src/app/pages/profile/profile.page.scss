@@ -173,6 +173,15 @@ ion-content {
   }
 }
 
+.voucher-list {
+  max-height: 430px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 6px;
+  scrollbar-color: #b79a84 transparent;
+  scrollbar-width: thin;
+}
+
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -597,6 +606,8 @@ ion-content {
     min-height: 400px;
     padding: 20px 16px;
   }
+
+  .voucher-list { max-height: 55vh; }
 
   .form-row {
     grid-template-columns: 1fr;

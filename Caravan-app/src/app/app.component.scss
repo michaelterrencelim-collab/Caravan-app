@@ -75,6 +75,12 @@ ion-router-outlet {
   background: transparent;
 }
 
+.app-sidebar ion-content::part(scroll) {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+}
+
 .app-sidebar ion-menu-toggle {
   display: block;
 }
@@ -109,6 +115,44 @@ ion-router-outlet {
   padding-top: 1px;
   border-top: 1px solid rgb(111 78 55 / 14%);
 }
+
+.sidebar-logout-section {
+  margin-top: auto;
+  padding: 8px 12px 24px;
+}
+
+.app-sidebar ion-item.sidebar-logout {
+  --color: #c5221f;
+  --background-hover: rgb(197 34 31 / 8%);
+  font-weight: 600;
+}
+
+.app-sidebar ion-item.sidebar-logout ion-icon { color: #c5221f; }
+
+.sidebar-logout-overlay {
+  position: fixed;
+  z-index: 10001;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgb(0 0 0 / 48%);
+}
+
+.sidebar-logout-dialog {
+  width: min(100%, 420px);
+  padding: 24px;
+  border-radius: 14px;
+  background: #fffaf5;
+  box-shadow: 0 16px 48px rgb(0 0 0 / 24%);
+}
+
+.sidebar-logout-dialog h2 { margin: 0 0 10px; color: var(--caravan-ink); font-size: 1.25rem; }
+.sidebar-logout-dialog p { margin: 0; color: #66584e; line-height: 1.5; }
+.sidebar-logout-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; }
+.sidebar-logout-actions button { min-height: 40px; padding: 8px 16px; border-radius: 8px; font: inherit; font-weight: 600; cursor: pointer; }
+.sidebar-logout-cancel { border: 1px solid #d6c8bd; background: #fff; color: var(--caravan-ink); }
+.sidebar-logout-confirm { border: 1px solid #c5221f; background: #c5221f; color: #fff; }
 
 .app-header ion-toolbar {
   --background: #fffaf5;

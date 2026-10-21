@@ -57,8 +57,30 @@
             </ion-menu-toggle>
           }
         </div>
+
+        @if (auth.ready() && auth.isAuthenticated()) {
+          <div class="sidebar-logout-section">
+            <ion-item class="sidebar-logout" button (click)="requestSidebarLogout()">
+              <ion-icon name="log-out-outline" slot="start" aria-hidden="true"></ion-icon>
+              <ion-label>Log out</ion-label>
+            </ion-item>
+          </div>
+        }
       </ion-content>
     </ion-menu>
+  }
+
+  @if (showSidebarLogoutConfirm) {
+    <div class="sidebar-logout-overlay" (click)="cancelSidebarLogout()">
+      <section class="sidebar-logout-dialog" role="alertdialog" aria-modal="true" aria-labelledby="sidebar-logout-title" (click)="$event.stopPropagation()">
+        <h2 id="sidebar-logout-title">Log out?</h2>
+        <p>Are you sure you want to log out of your Caravan account?</p>
+        <div class="sidebar-logout-actions">
+          <button type="button" class="sidebar-logout-cancel" (click)="cancelSidebarLogout()">Cancel</button>
+          <button type="button" class="sidebar-logout-confirm" (click)="confirmSidebarLogout()">Log out</button>
+        </div>
+      </section>
+    </div>
   }
 
   <div class="ion-page app-shell" id="main-content">

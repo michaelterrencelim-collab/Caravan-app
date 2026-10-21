@@ -234,10 +234,10 @@
 
       <!-- VOUCHERS -->
       @if (activeTab === 'vouchers') {
-        <section class="content-section">
+        <section class="content-section voucher-section">
           <h2>My Vouchers</h2>
 
-          <div class="card-list">
+          <div class="card-list voucher-list">
             @for (voucher of vouchers; track voucher.Voucher_id) {
               <div class="voucher-card">
                 <div>

@@ -21,6 +21,8 @@ ion-content {
 }
 
 .page-header { max-width: 1020px; margin: 0 auto; padding: 34px 20px 18px; }
+.back-button { margin: 0 0 14px; padding: 8px 13px; border: 1px solid #6f4e37; border-radius: 7px; background: #fff; color: #6f4e37; font: 13px InstrumentSans_Semi, sans-serif; cursor: pointer; }
+.back-button:hover { background: #6f4e37; color: #fff; }
 .page-header h1 { margin: 0; color: #2d2d2d; font: 28px Merriweather_Semi, Georgia, serif; }
 .reviews-container { max-width: 1020px; margin: 0 auto 60px; padding: 0 20px; }
 .page-error { padding: 16px; background: #fff; border-radius: 10px; color: #a3293d; }

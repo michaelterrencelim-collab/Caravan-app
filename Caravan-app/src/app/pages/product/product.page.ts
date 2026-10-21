@@ -15,7 +15,8 @@ interface Product {
   product_name: string;
   product_image: string;
   product_price: number;
-  product_likes: number;
+  product_rating?: number;
+  review_count?: number;
   product_country?: string;
   product_desc?: string;
   product_category?: Category[];
@@ -43,8 +44,6 @@ export class ProductPage implements OnInit {
   loading = true;
   error = '';
   size: '8oz' | '16oz' = '8oz';
-  liked = false;
-  likeCount = 0;
   wishlistBusy = false;
   actionModalMode: 'confirm-cart' | 'notice' | null = null;
   actionModalTitle = '';
@@ -84,7 +83,6 @@ export class ProductPage implements OnInit {
     this.loading = true;
     this.error = '';
     this.item = undefined;
-    this.liked = false;
     this.changeDetector.detectChanges();
 
     if (!Number.isInteger(this.itemId) || this.itemId <= 0) {
@@ -106,7 +104,6 @@ export class ProductPage implements OnInit {
       if ((Number(item.type_id) === 2) !== this.isBundle) throw new Error('Item type does not match route');
 
       this.item = item;
-      this.likeCount = Number(item.product_likes) || 0;
       this.similar = this.shuffle(this.getSimilar(item, all)).slice(0, 7);
       this.random = this.shuffle(all.filter(p => Number(p.product_id) !== Number(item.product_id))).slice(0, 7);
     } catch (e) {
@@ -153,9 +150,14 @@ export class ProductPage implements OnInit {
     void this.router.navigate(['/review'], { queryParams });
   }
 
-  toggleLike() {
-    this.liked = !this.liked;
-    this.likeCount += this.liked ? 1 : -1;
+  starString(): string {
+    const rating = Math.max(0, Math.min(5, Math.round(Number(this.item?.product_rating) || 0)));
+    return '★'.repeat(rating) + '☆'.repeat(5 - rating);
+  }
+
+  ratingLabel(): string {
+    const count = Number(this.item?.review_count) || 0;
+    return count ? `${Number(this.item?.product_rating || 0).toFixed(1)} (${count})` : 'No ratings';
   }
 
   private showNotice(title: string, message: string): void {

@@ -136,6 +136,14 @@ export class ReviewsPage implements OnInit {
 
   prev(): void { if (this.canGoPrev) this.currentPage--; }
   next(): void { if (this.canGoNext) this.currentPage++; }
+  goBackToProduct(): void {
+    if (this.itemId > 0) {
+      const key = this.isBundle ? 'bundleId' : 'productId';
+      void this.router.navigate(['/product'], { queryParams: { [key]: this.itemId } });
+      return;
+    }
+    void this.router.navigateByUrl('/store');
+  }
   starString(count: number): string { return '★'.repeat(Math.max(0, Math.min(5, count))) + '☆'.repeat(5 - Math.max(0, Math.min(5, count))); }
   starsForAverage(): string {
     const rounded = Math.round(this.summary.average_rating);

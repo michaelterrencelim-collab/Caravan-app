@@ -19,6 +19,7 @@ import {
   IonMenu,
   IonMenuButton,
   IonMenuToggle,
+  MenuController,
   IonRouterOutlet,
   IonToolbar,
 } from '@ionic/angular';
@@ -60,10 +61,12 @@ export class AppComponent implements OnInit, OnDestroy {
   private splashHideTimer?: ReturnType<typeof setTimeout>;
 
   private navigationSubscription?: Subscription;
+  showSidebarLogoutConfirm = false;
 
   constructor(
     readonly auth: AuthService,
     private readonly router: Router,
+    private readonly menuController: MenuController,
     readonly settings: SettingsService,
   ) {}
 
@@ -121,6 +124,21 @@ export class AppComponent implements OnInit, OnDestroy {
     this.navigationSubscription?.unsubscribe();
     clearTimeout(this.splashTimer);
     clearTimeout(this.splashHideTimer);
+  }
+
+  requestSidebarLogout(): void {
+    this.showSidebarLogoutConfirm = true;
+  }
+
+  cancelSidebarLogout(): void {
+    this.showSidebarLogoutConfirm = false;
+  }
+
+  async confirmSidebarLogout(): Promise<void> {
+    this.showSidebarLogoutConfirm = false;
+    await this.menuController.close('primary-navigation');
+    await this.auth.logout();
+    await this.router.navigateByUrl('/login');
   }
 
   private updateNavigationVisibility(url: string): void {

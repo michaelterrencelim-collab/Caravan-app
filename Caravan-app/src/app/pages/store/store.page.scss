@@ -137,7 +137,6 @@ ion-content { --background: var(--color-secondary); color: var(--text-color); }
 .product-rating { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-top: auto; }
 .rating-stars { color: #ffd66b; font-size: 17px; letter-spacing: 1px; white-space: nowrap; }
 .rating-label { color: #fff; font-size: 12px; }
-.product-likes { margin: 5px 0 0; color: #f4e6d9; font-size: 12px; }
 
 .content-loader { display: flex; min-height: 55vh; flex-direction: column; align-items: center; justify-content: center; color: var(--color-primary); }
 .content-loader ion-spinner { width: 54px; height: 54px; --color: var(--color-primary); }
@@ -185,6 +184,6 @@ ion-content { --background: var(--color-secondary); color: var(--text-color); }
   .product-name { font-size: 16px; }
   .product-price { font-size: 12px; }
   .rating-stars { font-size: 14px; }
-  .rating-label, .product-likes { font-size: 10px; }
+  .rating-label { font-size: 10px; }
   .noitem-image { width: 150px; height: 150px; }
 }

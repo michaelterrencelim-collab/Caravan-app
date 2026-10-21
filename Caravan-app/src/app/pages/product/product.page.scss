@@ -113,11 +113,10 @@ ion-content { --background: var(--color-secondary); color: #333; }
   &:hover:not(:disabled) { background: #fff; color: var(--color-green-card); }
 }
 
-.product-actions { display: flex; justify-content: space-between; align-items: center; }
-.btn-like {
-  background: none; border: none; color: #fff; cursor: pointer;
-  display: flex; align-items: center; gap: 5px; font-size: 12px; padding: 0;
-}
+.product-actions { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.product-rating { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; color: #fff; font-size: 13px; }
+.rating-stars { color: #ffd66b; font-size: 17px; letter-spacing: 1px; white-space: nowrap; }
+.rating-label { color: #fff; font-size: 12px; }
 .add-to-cart-button {
   background: none; border: none; color: #fff; font-size: 16px; cursor: pointer; padding: 0;
   transition: transform .2s ease;
